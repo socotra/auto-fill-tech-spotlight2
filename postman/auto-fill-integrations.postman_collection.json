@@ -1,0 +1,251 @@
+{
+	"info": {
+		"_postman_id": "cbc0639b-746e-48c8-bf76-ea3ff3ea81f6",
+		"name": "Autofill Integrations",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20320193"
+	},
+	"item": [
+		{
+			"name": "Autofill call sequence setup",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json()",
+							"let autofillLocator = response.locator;",
+							"",
+							"pm.collectionVariables.set(\"autofillLocator\", autofillLocator);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorizationToken}}",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"callSequence\": [\"autofill-demo\"],\n    \"operation\": \"personal-auto.newBusiness.create\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiBaseUrl}}/integrations/autofill",
+					"host": [
+						"{{apiBaseUrl}}"
+					],
+					"path": [
+						"integrations",
+						"autofill"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve autofill integrations",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorizationToken}}",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiBaseUrl}}/integrations/autofill",
+					"host": [
+						"{{apiBaseUrl}}"
+					],
+					"path": [
+						"integrations",
+						"autofill"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Autofill call sequence deletion",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorizationToken}}",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiBaseUrl}}/integrations/autofill/{{autofillLocator}}",
+					"host": [
+						"{{apiBaseUrl}}"
+					],
+					"path": [
+						"integrations",
+						"autofill",
+						"{{autofillLocator}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{auth_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"const tokenUrl = 'https://api.sandbox.socotra.com/account/authenticateAdmin';",
+					"",
+					"const getTokenRequest = {",
+					"  method: 'POST',",
+					"  url: tokenUrl,",
+					"  header: {",
+					"    'Content-Type': 'application/json'",
+					"  },",
+					"  body: {",
+					"        mode: 'raw',",
+					"        raw: JSON.stringify({",
+					"            hostName: \"your-hostname\",",
+					"            username: \"your-admin-username\",",
+					"            password: \"your-admin-password\" ",
+					"        })",
+					"    }",
+					"};",
+					"",
+					"pm.sendRequest(getTokenRequest, (err, response) => {",
+					"  const jsonResponse = response.json();",
+					"  const newToken = jsonResponse['authorizationToken'];",
+					"",
+					"  pm.variables.set('auth_token', newToken);",
+					"});"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "apiBaseUrl",
+			"value": "https://api.sandbox.socotra.com",
+			"type": "string"
+		},
+		{
+			"key": "policyHolderLocator",
+			"value": ""
+		},
+		{
+			"key": "policyLocator",
+			"value": ""
+		},
+		{
+			"key": "cancelationLocator",
+			"value": ""
+		},
+		{
+			"key": "endorsementLocator",
+			"value": ""
+		},
+		{
+			"key": "integrationLocator",
+			"value": ""
+		},
+		{
+			"key": "autofillLocator",
+			"value": ""
+		}
+	]
+}

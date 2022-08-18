@@ -1,0 +1,257 @@
+{
+	"info": {
+		"_postman_id": "a55f3f31-16b4-4026-b4a6-d7cfb44e282c",
+		"name": "Auto-Fill: \"Rewrite\" Plugin",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20320193"
+	},
+	"item": [
+		{
+			"name": "Create Policyholder",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json()",
+							"let policyHolderLocator = response.locator;",
+							"",
+							"pm.collectionVariables.set(\"policyHolderLocator\", policyHolderLocator);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"values\": {\n        \"first_name\": \"Alice\",\n        \"last_name\": \"Lee\",\n        \"date_of_birth\": \"1954-10-02\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiBaseUrl}}/policyholder/create",
+					"host": [
+						"{{apiBaseUrl}}"
+					],
+					"path": [
+						"policyholder",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a reference policy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json()",
+							"let referencePolicyLocator = response.locator;",
+							"",
+							"pm.collectionVariables.set(\"referencePolicyLocator\", referencePolicyLocator);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"policyholderLocator\": \"{{policyHolderLocator}}\",\n    \"productName\": \"personal-auto\",\n    \"paymentScheduleName\": \"monthly\",\n    \"fieldValues\": {\n        \"channel\": \"Direct\",\n        \"multiple_drivers\": \"No - Just Policyholder\",\n        \"10_year_felony_conviction\": \"No\",\n        \"insurance_fraud_conviction\": \"No\",\n        \"atfault_claims_past_5_years\": \"None\",\n        \"policy_type\": \"Original\"\n    },\n    \"exposures\": [\n            {\n                \"exposureName\": \"vehicle\",\n                \"fieldValues\": {\n                    \"vehicle_type\": \"Car\",\n                    \"body_style\": \"4 door\",\n                    \"year\": \"2014\",\n                    \"make\": \"Subaru\",\n                    \"model\": \"Outback\",\n                    \"vehicle_value\": 23000\n                },\n                \"perils\": [\n                    {\n                        \"name\": \"collision\"\n                    }\n                ]\n            }\n        ],\n    \"policyStartTimestamp\": \"1641013200000\",\n    \"policyEndTimestamp\": \"1672549200000\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiBaseUrl}}/policy",
+					"host": [
+						"{{apiBaseUrl}}"
+					],
+					"path": [
+						"policy"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a \"rewrite\" policy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"policyholderLocator\": \"{{policyHolderLocator}}\",\n    \"productName\": \"personal-auto\",\n    \"paymentScheduleName\": \"monthly\",\n    \"fieldValues\": {\n        \"policy_type\": \"Rewrite\",\n        \"reference_policy_id\": \"{{referencePolicyLocator}}\"\n    },\n    \"exposures\": [],\n    \"policyStartTimestamp\": \"1641013200000\",\n    \"policyEndTimestamp\": \"1672549200000\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apiBaseUrl}}/policy",
+					"host": [
+						"{{apiBaseUrl}}"
+					],
+					"path": [
+						"policy"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch aux data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorizationToken}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{apiBaseUrl}}/auxData/global/autoFillInput",
+					"host": [
+						"{{apiBaseUrl}}"
+					],
+					"path": [
+						"auxData",
+						"global",
+						"autoFillInput"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{auth_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"const tokenUrl = 'https://api.sandbox.socotra.com/account/authenticate';",
+					"",
+					"const getTokenRequest = {",
+					"  method: 'POST',",
+					"  url: tokenUrl,",
+					"  header: {",
+					"    'Content-Type': 'application/json'",
+					"  },",
+					"  body: {",
+					"        mode: 'raw',",
+					"        raw: JSON.stringify({",
+					"            hostName: \"mark-szymanski-auto-fill-2.co.sandbox.socotra.com\",",
+					"            username: \"alice.lee\",",
+					"            password: \"socotra\" ",
+					"        })",
+					"    }",
+					"};",
+					"",
+					"pm.sendRequest(getTokenRequest, (err, response) => {",
+					"  const jsonResponse = response.json();",
+					"  const newToken = jsonResponse['authorizationToken'];",
+					"",
+					"  pm.variables.set('auth_token', newToken);",
+					"});"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "apiBaseUrl",
+			"value": "https://api.sandbox.socotra.com",
+			"type": "string"
+		},
+		{
+			"key": "policyHolderLocator",
+			"value": ""
+		},
+		{
+			"key": "policyLocator",
+			"value": ""
+		},
+		{
+			"key": "cancelationLocator",
+			"value": ""
+		},
+		{
+			"key": "endorsementLocator",
+			"value": ""
+		},
+		{
+			"key": "referencePolicyLocator",
+			"value": ""
+		}
+	]
+}
